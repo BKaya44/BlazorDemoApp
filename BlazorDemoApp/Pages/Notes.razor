@@ -1,0 +1,41 @@
+﻿@page "/notes"
+
+<PageTitle>Notes</PageTitle>
+
+<h3>Notes</h3>
+
+<input id="noteInput" type="text" placeholder="Note" @bind="newNote" />
+<button class="btn btn-primary" @onclick="AddNote">Add note</button>
+
+<ul>
+    @for (int i = 0; i < notes.Count; i++)
+    {
+        var noteIndex = i;
+        <li>
+            @notes[noteIndex]
+            <button class="btn btn-danger btn-sm" @onclick="() => RemoveNote(noteIndex)">X</button>
+        </li>
+    }
+</ul>
+
+@code {
+    private List<string> notes = new List<string>();
+    private string newNote;
+
+    private void AddNote()
+    {
+        if (!string.IsNullOrWhiteSpace(newNote))
+        {
+            notes.Add(newNote);
+            newNote = string.Empty;
+        }
+    }
+
+    private void RemoveNote(int index)
+    {
+        if (index >= 0 && index < notes.Count)
+        {
+            notes.RemoveAt(index);
+        }
+    }
+}
