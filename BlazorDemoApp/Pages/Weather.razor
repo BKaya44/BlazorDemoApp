@@ -1,0 +1,49 @@
+﻿@page "/weather"
+
+<PageTitle>Weather</PageTitle>
+
+<h3>Weather in Amsterdam</h3>
+
+@if (weatherApiResponse != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Temperature (°C)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < weatherApiResponse.Hourly.Time.Count; i++)
+            {
+                <tr>
+                    <td>@weatherApiResponse.Hourly.Time[i]</td>
+                    <td>@weatherApiResponse.Hourly.Temperature_2m[i]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Loading weather data...</p>
+}
+
+@code {
+    private WeatherApiResponse weatherApiResponse;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchWeatherDataAsync();
+    }
+
+    private async Task FetchWeatherDataAsync()
+    {
+        HttpClient httpClient = new HttpClient();
+        var response = await httpClient.GetFromJsonAsync<WeatherApiResponse>("https://api.open-meteo.com/v1/forecast?latitude=52.3676&longitude=4.9041&hourly=temperature_2m&timezone=auto");
+        if (response != null)
+        {
+            weatherApiResponse = response;
+        }
+    }
+}
